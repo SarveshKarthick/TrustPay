@@ -74,3 +74,47 @@
 
 \- Milestones and end date can only be modified through mutual agreement.
 
+## Wallets
+
+
+
+| Field | Type | Constraints | Description |
+
+|--------|------|-------------|-------------|
+
+| id | UUID | Primary Key | Unique wallet identifier |
+
+| user\_id | UUID | FK → Users(id), UNIQUE | Wallet owner |
+
+| available\_balance | DECIMAL(12,2) | DEFAULT 0.00 | Withdrawable balance |
+
+| locked\_balance | DECIMAL(12,2) | DEFAULT 0.00 | Temporarily locked funds |
+
+| lifetime\_received | DECIMAL(12,2) | DEFAULT 0.00 | Total earnings received |
+
+| currency | CHAR(3) | DEFAULT 'INR' | Wallet currency |
+
+| created\_at | TIMESTAMP | NOT NULL | Creation timestamp |
+
+| updated\_at | TIMESTAMP | NOT NULL | Last updated |
+
+
+
+\### Business Rules
+
+
+
+\- Every user has exactly one wallet.
+
+\- Wallets are automatically created during user registration.
+
+\- Wallets cannot be deleted.
+
+\- Available balance can only increase after escrow releases funds.
+
+\- Client payments go directly into escrow, not into the wallet.
+
+\- Withdrawals are allowed only after successful KYC verification.
+
+\- All balances default to 0.00.
+
