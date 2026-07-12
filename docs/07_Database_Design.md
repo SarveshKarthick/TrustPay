@@ -118,3 +118,67 @@
 
 \- All balances default to 0.00.
 
+## ProjectMembers
+
+
+
+| Field | Type | Constraints | Description |
+
+|--------|------|-------------|-------------|
+
+| id | UUID | Primary Key | Unique membership identifier |
+
+| project\_id | UUID | FK → Projects(id) | Associated project |
+
+| user\_id | UUID | FK → Users(id) | Member of the project |
+
+| role | ENUM | NOT NULL | CLIENT or SELLER |
+
+| status | ENUM | DEFAULT 'PENDING' | Invitation status |
+
+| invited\_by | UUID | FK → Users(id) | User who sent the invitation |
+
+| joined\_at | TIMESTAMP | NULL | Acceptance timestamp |
+
+| created\_at | TIMESTAMP | NOT NULL | Record creation timestamp |
+
+
+
+\### Role Enum
+
+
+
+\- CLIENT
+
+\- SELLER
+
+
+
+\### Status Enum
+
+
+
+\- PENDING
+
+\- ACCEPTED
+
+\- REJECTED
+
+\- REMOVED
+
+
+
+\### Business Rules
+
+
+
+\- Every project must have exactly one CLIENT.
+
+\- A project can have one or more SELLERS.
+
+\- A user cannot join the same project more than once.
+
+\- Only ACCEPTED members can participate in project activities.
+
+\- Only the CLIENT can invite SELLERS.
+
