@@ -1,18 +1,21 @@
 from fastapi import FastAPI
+from app.config.settings import settings
 from app.users.router import router as users_router
 
 app = FastAPI(
-    title="TrustPay API",
-    version="1.0.0"
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION
 )
 
 app.include_router(users_router)
 
+
 @app.get("/")
 def root():
     return {
-        "message": "TrustPay Backend Running 🚀"
+        "message": f"{settings.APP_NAME} Running 🚀"
     }
+
 
 @app.get("/health")
 def health():
