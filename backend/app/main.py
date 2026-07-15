@@ -1,3 +1,4 @@
+from app.database.init_db import init_db
 from fastapi import FastAPI
 from app.config.settings import settings
 from app.users.router import router as users_router
@@ -16,6 +17,9 @@ def root():
         "message": f"{settings.APP_NAME} Running 🚀"
     }
 
+@app.on_event("startup")
+def startup():
+    init_db()
 
 @app.get("/health")
 def health():
