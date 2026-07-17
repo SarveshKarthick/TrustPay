@@ -1,4 +1,4 @@
-import bcrypt
+from app.auth.security import hash_password
 from sqlalchemy.orm import Session
 
 from app.users.model import User
@@ -15,10 +15,7 @@ def register_user(db: Session, user_data: UserCreate):
         raise ValueError("Email already registered")
 
     # Hash password
-    hashed_password = bcrypt.hashpw(
-        user_data.password.encode("utf-8"),
-        bcrypt.gensalt()
-    ).decode("utf-8")
+    hashed_password = hash_password(user_data.password)
 
     # Create user object
     user = User(
