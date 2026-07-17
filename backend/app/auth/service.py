@@ -1,33 +1,34 @@
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.auth.security import (
     verify_password,
     create_access_token
 )
-from app.auth.schema import LoginRequest
 from app.users.repository import get_user_by_email
 
 
-def login_user(db: Session, login_data: LoginRequest):
-
+def login_user(
+    db: Session,
+    form_data: OAuth2PasswordRequestForm
+):
     # Find user by email
     user = get_user_by_email(
         db,
-        login_data.email
+        form_data.username
     )
 
-    # Email not found
     if not user:
         raise ValueError("Invalid email or password")
 
-    # Wrong password
+    # Verify password
     if not verify_password(
-        login_data.password,
+        form_data.password,
         user.password_hash
     ):
         raise ValueError("Invalid email or password")
 
-    # Generate JWT Token
+    # Generate JWT
     access_token = create_access_token(
         data={
             "sub": user.email

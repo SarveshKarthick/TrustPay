@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from app.auth.schema import LoginRequest, TokenResponse
+from app.auth.schema import TokenResponse
 from app.auth.service import login_user
 from app.dependencies.database import get_db
 
@@ -16,13 +17,13 @@ router = APIRouter(
     response_model=TokenResponse
 )
 def login(
-    login_data: LoginRequest,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     try:
         return login_user(
             db,
-            login_data
+            form_data
         )
 
     except ValueError as e:
