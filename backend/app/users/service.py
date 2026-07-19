@@ -5,7 +5,8 @@ from app.users.model import User
 from app.users.schema import UserCreate
 from app.users.repository import (
     get_user_by_email,
-    create_user
+    create_user,
+    get_user_profile
 )
 
 
@@ -35,3 +36,18 @@ def register_user(
         db,
         user
     )
+
+
+def get_current_user_profile(
+    db: Session,
+    email: str
+):
+    user = get_user_profile(
+        db,
+        email
+    )
+
+    if not user:
+        raise ValueError("User not found")
+
+    return user

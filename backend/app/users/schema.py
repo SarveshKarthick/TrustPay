@@ -13,3 +13,11 @@ class UserResponse(BaseModel):
     email: EmailStr
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserProfileResponse(BaseModel):
+    id: int
+    full_name: str
+    email: EmailStr
+
+    model_config = ConfigDict(from_attributes=True)

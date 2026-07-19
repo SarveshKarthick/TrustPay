@@ -1,10 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.dependencies.database import get_db
-from app.users.schema import UserCreate, UserResponse
-from app.users.service import register_user
 from app.auth.dependencies import get_current_user
+from app.dependencies.database import get_db
+from app.users.schema import (
+    UserCreate,
+    UserResponse,
+    UserProfileResponse
+)
+from app.users.service import (
+    register_user,
+    get_current_user_profile
+)
 
 router = APIRouter(
     prefix="/users",
@@ -12,7 +19,10 @@ router = APIRouter(
 )
 
 
-@router.post("/register", response_model=UserResponse)
+@router.post(
+    "/register",
+    response_model=UserResponse
+)
 def register(
     user: UserCreate,
     db: Session = Depends(get_db)
@@ -27,11 +37,22 @@ def register(
         )
 
 
-@router.get("/me")
+@router.get(
+    "/me",
+    response_model=UserProfileResponse
+)
 def get_me(
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-    return {
-        "message": "Protected route accessed successfully!",
-        "email": current_user
-    }
+    try:
+        return get_current_user_profile(
+            db,
+            current_user
+        )
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e)
+        )

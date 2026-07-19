@@ -12,3 +12,10 @@ def create_user(db: Session, user: User):
     db.commit()
     db.refresh(user)
     return user
+def get_user_profile(
+    db: Session,
+    email: str
+):
+    return db.query(User).filter(
+        User.email == email
+    ).first()
