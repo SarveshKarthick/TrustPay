@@ -6,11 +6,13 @@ from app.dependencies.database import get_db
 from app.users.schema import (
     UserCreate,
     UserResponse,
-    UserProfileResponse
+    UserProfileResponse,
+    UserUpdateRequest
 )
 from app.users.service import (
     register_user,
-    get_current_user_profile
+    get_current_user_profile,
+    update_current_user_profile
 )
 
 router = APIRouter(
@@ -54,5 +56,28 @@ def get_me(
     except ValueError as e:
         raise HTTPException(
             status_code=404,
+            detail=str(e)
+        )
+
+
+@router.put(
+    "/me",
+    response_model=UserProfileResponse
+)
+def update_me(
+    user: UserUpdateRequest,
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    try:
+        return update_current_user_profile(
+            db,
+            current_user,
+            user
+        )
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
             detail=str(e)
         )

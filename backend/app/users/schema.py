@@ -21,3 +21,8 @@ class UserProfileResponse(BaseModel):
     email: EmailStr
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdateRequest(BaseModel):
+    full_name: str
+    email: EmailStr
