@@ -26,3 +26,8 @@ class UserProfileResponse(BaseModel):
 class UserUpdateRequest(BaseModel):
     full_name: str
     email: EmailStr
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str

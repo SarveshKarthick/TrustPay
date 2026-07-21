@@ -44,3 +44,16 @@ def update_user_profile(
     db.refresh(user)
 
     return user
+
+
+def update_user_password(
+    db: Session,
+    user: User,
+    password_hash: str
+):
+    user.password_hash = password_hash
+
+    db.commit()
+    db.refresh(user)
+
+    return user

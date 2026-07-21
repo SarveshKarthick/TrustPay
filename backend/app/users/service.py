@@ -1,16 +1,21 @@
-from app.auth.security import hash_password
 from sqlalchemy.orm import Session
 
+from app.auth.security import (
+    hash_password,
+    verify_password
+)
 from app.users.model import User
+from app.users.repository import (
+    create_user,
+    get_user_by_email,
+    get_user_profile,
+    update_user_password,
+    update_user_profile
+)
 from app.users.schema import (
+    ChangePasswordRequest,
     UserCreate,
     UserUpdateRequest
-)
-from app.users.repository import (
-    get_user_by_email,
-    create_user,
-    get_user_profile,
-    update_user_profile
 )
 
 
@@ -86,4 +91,34 @@ def update_current_user_profile(
         current_user,
         user_data.full_name,
         user_data.email
+    )
+
+
+def change_current_user_password(
+    db: Session,
+    current_email: str,
+    password_data: ChangePasswordRequest
+):
+    current_user = get_user_profile(
+        db,
+        current_email
+    )
+
+    if not current_user:
+        raise ValueError("User not found")
+
+    if not verify_password(
+        password_data.current_password,
+        current_user.password_hash
+    ):
+        raise ValueError("Current password is incorrect")
+
+    new_password_hash = hash_password(
+        password_data.new_password
+    )
+
+    return update_user_password(
+        db,
+        current_user,
+        new_password_hash
     )
